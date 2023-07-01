@@ -34,11 +34,13 @@ steps:
   displayName: 'dotnet test $(buildConfiguration)'
   inputs:
     command: publish
-    publishWebProjects: True
+    projects: '**/pipelines-dotnet-core.csproj'
+    publishWebProjects: false
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
-- task: PublishPipelineArtifact@1
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'TestProject'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/demo-project.$(Build.BuildNumber).zip'
+    ArtifactName: 'demo-project.$(Build.BuildNumber)'
