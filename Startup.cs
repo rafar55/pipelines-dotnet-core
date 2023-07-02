@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using pipelines_dotnet_core.Configuration;
+using System.Security.Cryptography.X509Certificates;
 
 namespace pipelines_dotnet_core
 {
@@ -19,6 +21,9 @@ namespace pipelines_dotnet_core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.Configure<TestConfigurations>(Configuration.GetSection("Test"));
+
             _ = services.Configure<CookiePolicyOptions>(options =>
               {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

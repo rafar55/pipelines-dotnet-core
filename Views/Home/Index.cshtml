@@ -1,8 +1,13 @@
-﻿@{
+﻿@using Microsoft.Extensions.Options;
+@using pipelines_dotnet_core.Configuration;
+@inject IOptions<TestConfigurations> TestConfigurations
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome From Azure Pipelines!!!</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>@TestConfigurations.Value.Value1</p>
+    <p>@TestConfigurations.Value.Value2</p>
 </div>
