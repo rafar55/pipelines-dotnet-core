@@ -60,6 +60,25 @@ stages:
           artifactName: 'demo-project.$(Build.BuildNumber)'
           itemPattern: '**/*.zip'
           targetPath: '$(Pipeline.Workspace)'
+      - task: AzureAppServiceSettings@1
+        inputs:
+          azureSubscription: 'Azure Bitworks'
+          appName: 'demo-project-happy'
+          resourceGroupName: 'HappyLiving'
+          slotName: 'dev'
+          appSettings: |
+            [
+               {
+                "name": "Test__Value1",
+                "value": "Dev Slot!",
+                "slotSetting": true
+               },
+               {
+                "name": "Test__Value2",
+                "value": "From Dev Stage",
+                "slotSetting": true
+               }
+            ]
       - task: AzureRmWebAppDeployment@4
         inputs:
           ConnectionType: 'AzureRM'
