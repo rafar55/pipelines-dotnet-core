@@ -13,7 +13,7 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: "build-dotnet"
+- stage: "builddotnet"
   jobs:
   - job: "BuildJob"
     steps:
@@ -50,7 +50,7 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
         ArtifactName: 'demo-project.$(Build.BuildNumber)'
 
-- stage: "deploy-dev"
+- stage: "deploydev"
   jobs:
     - job: "deploy"
       steps:        
