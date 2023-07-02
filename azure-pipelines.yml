@@ -12,36 +12,56 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET Core sdk 6.X'
-  inputs:      
-    version: '6.x'
+stages:
+- stage: "Build Project"
+  jobs:
+  - job: "BuildJob"
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 6.X'
+      inputs:      
+        version: '6.x'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build $(buildConfiguration)'
-  inputs:
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build $(buildConfiguration)'
+      inputs:
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet publish $(buildConfiguration)'
-  inputs:
-    command: publish
-    projects: '**/pipelines-dotnet-core.csproj'
-    publishWebProjects: false
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
-    zipAfterPublish: true
-    modifyOutputPath: false
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish $(buildConfiguration)'
+      inputs:
+        command: publish
+        projects: '**/pipelines-dotnet-core.csproj'
+        publishWebProjects: false
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
+        zipAfterPublish: true
+        modifyOutputPath: false
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
-    ArtifactName: 'demo-project.$(Build.BuildNumber)'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
+        ArtifactName: 'demo-project.$(Build.BuildNumber)'
+
+- stage: "Deploy Dev"
+  jobs:
+    - job: "deploy"
+      steps:        
+      - task: AzureRmWebAppDeployment@4
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'Azure Bitworks'
+          appType: 'webAppLinux'
+          WebAppName: 'demo-project-happy'
+          deployToSlotOrASE: true
+          ResourceGroupName: 'HappyLiving'
+          SlotName: 'dev'
+          packageForLinux: '$(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)/*.zip'
+          RuntimeStack: 'DOTNETCORE|6.0'
