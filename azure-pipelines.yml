@@ -31,7 +31,7 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet test $(buildConfiguration)'
+  displayName: 'dotnet publish $(buildConfiguration)'
   inputs:
     command: publish
     projects: '**/pipelines-dotnet-core.csproj'
@@ -42,5 +42,5 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/demo-project.$(Build.BuildNumber).zip'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'demo-project.$(Build.BuildNumber)'
