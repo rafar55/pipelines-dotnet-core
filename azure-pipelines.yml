@@ -36,7 +36,7 @@ steps:
     command: publish
     projects: '**/pipelines-dotnet-core.csproj'
     publishWebProjects: false
-    arguments: '--configuration $(BuildConfiguration) $(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/demo-project-$(Build.BuildNumber)'
     zipAfterPublish: True
 
 - task: PublishBuildArtifacts@1
